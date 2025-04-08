@@ -1,0 +1,99 @@
+import Catalog from "./Catalog.js";
+import User from "./User.js";
+import Transactions from "./Transactions.js";
+import Notifications from "./Notifications.js";
+import Report from "./Report.js";
+import user from "./User.js";
+
+class LibrarySystem {
+    constructor() {
+        this.catalog = new Catalog();
+        this.users = [];
+        this.transactions = [];
+        this.notifications = [];
+    }
+
+    registerUser(ID, name, address, contactInfo) {
+        const user = new User(ID, name, address, contactInfo);
+        this.users.push(user);
+        console.log(`User ${name} successfully registered!`);
+        return user;
+    }
+    deleteUser(user) {
+        this.users = this.users.filter(u => u._name !== user._name);
+        console.log(user._name,`has been deleted.`);
+    }
+    issueBook(user, bookID) {
+        const book = this.catalog._listOfBooks.find(b => b._ID === bookID);
+
+        if (!book) {
+            console.error(`Book with ID ${bookID} not found!`);
+            return;
+        }
+
+        const transaction = Transactions.createTransaction(this.transactions.length + 1, user, book);
+        this.transactions.push(transaction);
+        user.addBook(book);
+
+        console.log(`Book "${book._name}" issued to ${user._name}`);
+    }
+
+    returnBook(user, bookID) {
+        const transaction = this.transactions.find(
+            t => t.user === user && t.book._ID === bookID && t.status === 'issued'
+        );
+
+        if (!transaction) {
+            console.error(` No active transaction found for book ID ${bookID}`);
+            return;
+        }
+
+
+        transaction.updateStatus("returned");
+
+
+        user._listOfBooks = user._listOfBooks.filter(b => b._ID !== bookID);
+
+        console.log(`Book "${transaction.book._name}" returned by ${user._name}`);
+    }
+
+
+    generateReport() {
+        console.log("Library Report");
+        console.log(` Period: ${new Date().toLocaleDateString()}`);
+
+        console.log("\n Books in Catalog:");
+        this.catalog._listOfBooks.forEach(book => {
+            console.log(` - ${book._name} by ${book._author} (${book._yearOfProduction})`);
+        });
+
+        console.log("\n Transactions:");
+        this.transactions.forEach(tr => {
+            console.log(` - ${tr.user._name} took "${tr.book._name}" on ${tr.issueDate.toLocaleDateString()} [${tr.status}]`);
+        });
+
+        console.log("\n Registered Users:");
+        this.users.forEach(user => {
+            console.log(` - ${user._name} (${user._contactInfo})`);
+
+
+        });
+    }
+
+
+    checkOverdueBooks() {
+        this.users.forEach(user => {
+            const userTransactions = this.transactions.filter(t => t.user === user && t.status === 'issued');
+            const overdueBooks = userTransactions.filter(t => t.isOverdue());
+
+            if (overdueBooks.length > 0) {
+                const message = `User ${user._name}, you have overdue books!`;
+                const notification = new Notifications(user, message, "sent");
+                this.notifications.push(notification);
+                console.error(message);
+            }
+        });
+    }
+}
+
+export default LibrarySystem;
