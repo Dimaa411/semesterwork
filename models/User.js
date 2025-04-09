@@ -8,6 +8,10 @@ class User {
         this._historyOfBooks = [];
     }
 
+    get name() {
+        return this._name;
+    }
+
     addBook(book) {
         this._listOfBooks.push(book);
         this._historyOfBooks.push(book);
@@ -25,14 +29,14 @@ class User {
             console.log('History is empty');
         }
     }
+
     listOfBooks() {
         if (this._listOfBooks.length > 0) {
             console.log('List of Books', this._listOfBooks);
         } else {
-            console.log('list is empty');
+            console.log('List is empty');
         }
     }
 }
-
 
 export default User;

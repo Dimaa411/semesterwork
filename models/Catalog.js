@@ -19,9 +19,13 @@ class Catalog {
 
         if (foundBooks.length > 0) {
             console.log(`Found books by criteria ${criteria}:`, foundBooks);
-        } else {
+        } else if(foundBooks.length < 1) {
+            console.log("value must have at least one letter");
+        }
+        else {
             console.error('No books found matching the criteria');
         }
+
     }
 }
 

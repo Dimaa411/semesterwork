@@ -8,6 +8,8 @@ import Notifications from "./models/Notifications.js";
 import Search from "./models/Search.js";
 import LibrarySystem from "./models/LibrarySystem.js";
 import EBook from "./models/EBook.js";
+import EventManager from "./models/EventManager.js"
+
 
 // Створюємо книги
 const book1 = new Book(1, 'The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 'Fiction', 1925, 3);
@@ -17,7 +19,7 @@ const book3 = new Book(3, 'Moby Dick', 'Herman Melville', '9781503280786', 'Adve
 // Створюємо користувача і бібліотекаря
 const user1 = new User(1, "Dima", "Konovaltsya 35", "+380688372701");
 const librarian1 = new Librarian(1, "Vasya", "Konovaltsya 231", "+453543645645", "boss", "hight");
-
+const eventManager = new EventManager();
 // Створюємо каталог
 const catalog = new Catalog([book1, book2, book3]);
 
@@ -102,5 +104,9 @@ ebook.getInfo()
 
 library.deleteUser(user4)
 library.generateReport()
-
-
+catalog.searchBook('author','')
+library.createEvent("Reading Book","Konovaltsy 24","Reading","10/04/2025")
+library.getEventsInfo()
+library.registerEventsUser(1,"Bob","lk",'333')
+library.registerToEvent('Reading Book',"Bob")
+library.getEventsInfo()

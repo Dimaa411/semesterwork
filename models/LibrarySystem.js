@@ -3,7 +3,7 @@ import User from "./User.js";
 import Transactions from "./Transactions.js";
 import Notifications from "./Notifications.js";
 import Report from "./Report.js";
-import user from "./User.js";
+import EventManager from "./EventManager.js";
 
 class LibrarySystem {
     constructor() {
@@ -11,6 +11,7 @@ class LibrarySystem {
         this.users = [];
         this.transactions = [];
         this.notifications = [];
+        this.eventManager = new EventManager(this.users); // 🔗 інтеграція
     }
 
     registerUser(ID, name, address, contactInfo) {
@@ -19,13 +20,36 @@ class LibrarySystem {
         console.log(`User ${name} successfully registered!`);
         return user;
     }
+
+    registerEventsUser(ID, name, address, contactInfo) {
+       this.eventManager.registerEventsUser(ID, name, address, contactInfo);
+    }
+
+
+    createEvent(eventName, address, eventCategory, date, users = []) {
+        this.eventManager.createEvent(eventName, address, eventCategory, date, users);
+    }
+
+    registerToEvent(eventName, userName) {
+        this.eventManager.registerToEvent(eventName, userName);
+    }
+
+    getEventsInfo() {
+        this.eventManager.getEventsInfo();
+    }
+
+    sendEventInvitations() {
+        this.eventManager.sendMessage();
+    }
+
     deleteUser(user) {
         this.users = this.users.filter(u => u._name !== user._name);
-        console.log(user._name,`has been deleted.`);
+        this.eventManager.users = this.eventManager.users.filter(u => u._name !== user._name);
+        console.log(user._name, `has been deleted.`);
     }
+
     issueBook(user, bookID) {
         const book = this.catalog._listOfBooks.find(b => b._ID === bookID);
-
         if (!book) {
             console.error(`Book with ID ${bookID} not found!`);
             return;
@@ -44,42 +68,35 @@ class LibrarySystem {
         );
 
         if (!transaction) {
-            console.error(` No active transaction found for book ID ${bookID}`);
+            console.error(`No active transaction found for book ID ${bookID}`);
             return;
         }
 
-
         transaction.updateStatus("returned");
-
-
         user._listOfBooks = user._listOfBooks.filter(b => b._ID !== bookID);
 
         console.log(`Book "${transaction.book._name}" returned by ${user._name}`);
     }
 
-
     generateReport() {
         console.log("Library Report");
-        console.log(` Period: ${new Date().toLocaleDateString()}`);
+        console.log(`Period: ${new Date().toLocaleDateString()}`);
 
-        console.log("\n Books in Catalog:");
+        console.log("\nBooks in Catalog:");
         this.catalog._listOfBooks.forEach(book => {
             console.log(` - ${book._name} by ${book._author} (${book._yearOfProduction})`);
         });
 
-        console.log("\n Transactions:");
+        console.log("\nTransactions:");
         this.transactions.forEach(tr => {
             console.log(` - ${tr.user._name} took "${tr.book._name}" on ${tr.issueDate.toLocaleDateString()} [${tr.status}]`);
         });
 
-        console.log("\n Registered Users:");
+        console.log("\nRegistered Users:");
         this.users.forEach(user => {
             console.log(` - ${user._name} (${user._contactInfo})`);
-
-
         });
     }
-
 
     checkOverdueBooks() {
         this.users.forEach(user => {
@@ -94,6 +111,7 @@ class LibrarySystem {
             }
         });
     }
+
 }
 
 export default LibrarySystem;

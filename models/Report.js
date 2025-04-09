@@ -13,22 +13,21 @@ class Report {
     }
     export(format) {
         if (format === "json") {
-            console.log("Експорт у JSON:");
+            console.log("Export to json");
             console.log(JSON.stringify(this.data, null, 2));
         } else if (format === "csv") {
-            console.log("Експорт у CSV:");
+            console.log("Export to CSV:");
             if (Array.isArray(this.data) && this.data.length > 0) {
-                let csv = Object.keys(this.data[0]).join(",") + "\n"; // Заголовки
-                csv += this.data.map(row => Object.values(row).join(",")).join("\n"); // Дані
+                let csv = Object.keys(this.data[0]).join(",") + "\n";
+                csv += this.data.map(row => Object.values(row).join(",")).join("\n");
                 console.log(csv);
             } else {
-                console.error("Немає даних для експорту.");
+                console.error("No data to export.");
             }
         } else {
-            console.error("Невідомий формат експорту.");
+            console.error("unknown format " + format);
         }
     }
 }
-
 
 export default Report
