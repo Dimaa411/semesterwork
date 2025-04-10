@@ -9,7 +9,7 @@ import Search from "./models/Search.js";
 import LibrarySystem from "./models/LibrarySystem.js";
 import EBook from "./models/EBook.js";
 import EventManager from "./models/EventManager.js"
-
+import PrintedBook from "./models/PrintedBook.js";
 
 // Створюємо книги
 const book1 = new Book(1, 'The Great Gatsby', 'F. Scott Fitzgerald', '9780743273565', 'Fiction', 1925, 3);
@@ -23,7 +23,7 @@ const eventManager = new EventManager();
 // Створюємо каталог
 const catalog = new Catalog([book1, book2, book3]);
 
-// Бібліотекар видає книгу користувачеві
+// Бібліотекар видає книгу користувачу
 librarian1.giveBook(book3, user1);
 
 // Створюємо транзакції для користувача
@@ -32,9 +32,9 @@ const transactions = [
     Transactions.createTransaction(2, user1, book2)
 ];
 
-// Примусово змінюємо дату, щоб зробити книгу простроченою
-transactions[0].issueDate = new Date("2025-03-15"); // Ця буде прострочена
-transactions[1].issueDate = new Date("2025-04-25"); // Ця ще в терміні
+// Примусово змінюємо дату
+transactions[0].issueDate = new Date("2025-03-15");
+transactions[1].issueDate = new Date("2025-04-25");
 
 // Перевіряємо, чи є прострочені книги
 const notification = new Notifications(user1);
@@ -110,3 +110,4 @@ library.getEventsInfo()
 library.registerEventsUser(1,"Bob","lk",'333')
 library.registerToEvent('Reading Book',"Bob")
 library.getEventsInfo()
+

@@ -1,3 +1,6 @@
+import Book from "./Book.js";
+import Catalog from "./Catalog.js";
+
 class User {
     constructor(ID, name, address, contactInfo) {
         this._ID = ID;
@@ -19,7 +22,11 @@ class User {
     }
 
     deleteBook(book) {
-        this._listOfBooks = this._listOfBooks.filter(b => b !== book);
+        const index = this._listOfBooks.find(item => item === book);
+        if (index !== -1) {
+            this._listOfBooks.splice(index, 1);
+            console.log(`Book ${book}  successfully removed!`)
+        }
     }
 
     historyOfPickedBooks() {
@@ -37,6 +44,8 @@ class User {
             console.log('List is empty');
         }
     }
+
 }
 
 export default User;
+
